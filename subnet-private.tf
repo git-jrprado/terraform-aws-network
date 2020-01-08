@@ -59,16 +59,16 @@ resource "aws_route_table" "private" {
 #   depends_on = ["aws_nat_gateway.nat_gw"]
 # }
 
-# resource "aws_route_table_association" "private" {
-#   count          = "${length(data.aws_availability_zones.available.names) > var.max_az ? var.max_az : length(data.aws_availability_zones.available.names)}"
-#   subnet_id      = "${aws_subnet.private.*.id[count.index]}"
-#   route_table_id = "${aws_route_table.private.*.id[count.index]}"
+resource "aws_route_table_association" "private" {
+  count          = "${length(data.aws_availability_zones.available.names) > var.max_az ? var.max_az : length(data.aws_availability_zones.available.names)}"
+  subnet_id      = "${aws_subnet.private.*.id[count.index]}"
+  route_table_id = "${aws_route_table.private.*.id[count.index]}"
 
-#   lifecycle {
-#     ignore_changes        = ["subnet_id"]
-#     create_before_destroy = true
-#   }
-# }
+  lifecycle {
+    ignore_changes        = ["subnet_id"]
+    create_before_destroy = true
+  }
+}
 
 # resource "aws_route_table_association" "private_single" {
 #   count          = "${var.nat_count == length(data.aws_availability_zones.available.names) ? 0 : 1}"
