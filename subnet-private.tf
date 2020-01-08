@@ -31,44 +31,44 @@ resource "aws_route_table" "private" {
   )}"
 }
 
-resource "aws_route" "nat_route" {
-  count = "${var.multi_nat ? (length(data.aws_availability_zones.available.names) > var.max_az ? var.max_az : length(data.aws_availability_zones.available.names)) : 0}"
+# resource "aws_route" "nat_route" {
+#   count = "${var.multi_nat ? (length(data.aws_availability_zones.available.names) > var.max_az ? var.max_az : length(data.aws_availability_zones.available.names)) : 0}"
 
-  route_table_id         = "${aws_route_table.private.*.id[count.index]}"
-  destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = "${aws_nat_gateway.nat_gw.*.id[count.index]}"
+#   route_table_id         = "${aws_route_table.private.*.id[count.index]}"
+#   destination_cidr_block = "0.0.0.0/0"
+#   nat_gateway_id         = "${aws_nat_gateway.nat_gw.*.id[count.index]}"
 
-  lifecycle {
-    create_before_destroy = true
-  }
+#   lifecycle {
+#     create_before_destroy = true
+#   }
 
-  depends_on = ["aws_nat_gateway.nat_gw"]
-}
+#   depends_on = ["aws_nat_gateway.nat_gw"]
+# }
 
-resource "aws_route" "nat_route_single_nat" {
-  count = "${var.multi_nat ? 0 : (length(data.aws_availability_zones.available.names) > var.max_az ? var.max_az : length(data.aws_availability_zones.available.names))}"
+# resource "aws_route" "nat_route_single_nat" {
+#   count = "${var.multi_nat ? 0 : (length(data.aws_availability_zones.available.names) > var.max_az ? var.max_az : length(data.aws_availability_zones.available.names))}"
 
-  route_table_id         = "${aws_route_table.private.*.id[count.index]}"
-  destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = "${aws_nat_gateway.nat_gw.*.id[0]}"
+#   route_table_id         = "${aws_route_table.private.*.id[count.index]}"
+#   destination_cidr_block = "0.0.0.0/0"
+#   nat_gateway_id         = "${aws_nat_gateway.nat_gw.*.id[0]}"
 
-  lifecycle {
-    create_before_destroy = true
-  }
+#   lifecycle {
+#     create_before_destroy = true
+#   }
 
-  depends_on = ["aws_nat_gateway.nat_gw"]
-}
+#   depends_on = ["aws_nat_gateway.nat_gw"]
+# }
 
-resource "aws_route_table_association" "private" {
-  count          = "${length(data.aws_availability_zones.available.names) > var.max_az ? var.max_az : length(data.aws_availability_zones.available.names)}"
-  subnet_id      = "${aws_subnet.private.*.id[count.index]}"
-  route_table_id = "${aws_route_table.private.*.id[count.index]}"
+# resource "aws_route_table_association" "private" {
+#   count          = "${length(data.aws_availability_zones.available.names) > var.max_az ? var.max_az : length(data.aws_availability_zones.available.names)}"
+#   subnet_id      = "${aws_subnet.private.*.id[count.index]}"
+#   route_table_id = "${aws_route_table.private.*.id[count.index]}"
 
-  lifecycle {
-    ignore_changes        = ["subnet_id"]
-    create_before_destroy = true
-  }
-}
+#   lifecycle {
+#     ignore_changes        = ["subnet_id"]
+#     create_before_destroy = true
+#   }
+# }
 
 # resource "aws_route_table_association" "private_single" {
 #   count          = "${var.nat_count == length(data.aws_availability_zones.available.names) ? 0 : 1}"
