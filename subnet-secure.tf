@@ -14,7 +14,7 @@ resource "aws_subnet" "secure" {
     )
   )}"
 
-  depends_on = ["aws_nat_gateway.nat_gw"]
+#   depends_on = ["aws_nat_gateway.nat_gw"]
 }
 
 resource "aws_route_table" "secure" {
